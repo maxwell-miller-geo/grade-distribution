@@ -48,13 +48,13 @@ def read_table(html):
     classes = df.index
     conv = {4: 'A',3:'B',2:'C',1:'D',0:'F'}
 
-    #df['Raw'] = None # Create empty raw data series
+    df['Raw'] = None # Create empty raw data series
     df['Average'] = None # creates average column
     df['Median'] = None
     df['Mode'] = None
     df['σ'] = None #standard deviation
     df['Semester'] = Time
-    #df['Classes'] = df.index
+    df['Classes'] = df.index
 
     for row in range(len(df.index)): # loops through all of the rows
         raw = []
@@ -65,11 +65,11 @@ def read_table(html):
                     raw.append(grade)
         if len(raw) > 1:
             # Code below is supposed to insert the series of grades into 1 cell, but it does not work after saving it to another place WTF
-            #df.iloc[row, 16] = pd.Series([raw]) # needs to be a series and enclosed with brackets
-            df.iloc[row, 16] = round(stat.mean(raw),3)
-            df.iloc[row, 17] = stat.median(raw)
-            df.iloc[row, 18] = stat.mode(raw)
-            df.iloc[row, 19] = stat.stdev(raw)
+            df.iloc[row, 16] = pd.Series([raw]) # needs to be a series and enclosed with brackets
+            df.iloc[row, 17] = round(stat.mean(raw),3)
+            df.iloc[row, 18] = stat.median(raw)
+            df.iloc[row, 19] = stat.mode(raw)
+            df.iloc[row, 20] = stat.stdev(raw)
             # Plot here
         #plt.bar(df.index,df['Average'])
         #plt.title('Mean GPA {}'.format(Time))
@@ -129,43 +129,10 @@ CY = pd.concat([Fall_2003,Spring_2004,Fall_2004,Spring_2005,Fall_2005,Spring_200
                 Fall_2012,Spring_2013,Fall_2013,Spring_2014,Fall_2014,Spring_2015,
                 Fall_2015,Spring_2016,Fall_2016,Spring_2017,Fall_2017,Spring_2018,
                 Fall_2018,Spring_2019,Fall_2019,Spring_2020,Fall_2020,Spring_2021])
-
+# Export as CSV file
+CY.to_csv('Geology_Grades.csv')
 # Find Classes with certain Professors
 Wittke = CY[CY['Instructor Name'].str.contains('Wittke')]
 
-# Introducing the GUI!
 
-class MyFrame(wx.Frame):
-    
-##    def ask(parent=None, message='', default_value=''):
-##        dlg = wx.TextEntryDialog(parent, message, defaultValue=default_value)
-##        dlg.ShowModal()
-##        result = dlg.GetValue()
-##        dlg.Destroy()
-##        return result
-      
-    def __init__(self):
-        super().__init__(parent=None, title='NAU Grade Distribution')
-        panel = wx.Panel(self)        
-        my_sizer = wx.BoxSizer(wx.VERTICAL)        
-        self.text_ctrl = wx.TextCtrl(panel)
-        my_sizer.Add(self.text_ctrl, 0, wx.ALL | wx.EXPAND, 5)        
-        my_btn = wx.Button(panel, label='Search')
-        my_btn.Bind(wx.EVT_BUTTON, self.on_press)
-        my_sizer.Add(my_btn, 0, wx.ALL | wx.CENTER, 5)
-        panel.SetSizer(my_sizer)        
-        self.Show()
-        
-    def on_press(self, event):
-        value = self.text_ctrl.GetValue()
-        if not value:
-            print("You didn't enter anything!")
-        else:
-            print(CY[CY['Instructor Name'].str.contains(value)])
-            print(f'You typed: "{value}"')
-
-if __name__ == '__main__':
-    app = wx.App()
-    frame = MyFrame()
-    app.MainLoop()
     
